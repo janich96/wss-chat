@@ -193,6 +193,8 @@ document.body.appendChild(chatWindow);
 
 const socket = new WebSocket('ws://localhost:8080');
 
+const randomNumber = Math.round(Math.random());
+
 const openChat = () => {
     chatWindow.classList.add('show');
     chatToggle.style.display = 'none';
@@ -225,8 +227,6 @@ closeButton.onclick = () => {
         console.log('WebSocket connection closed');
     };
 };
-
-const randomNumber = Math.round(Math.random());
 
 socket.onmessage = (event) => {
     console.log(event.data);

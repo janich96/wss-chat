@@ -191,7 +191,7 @@ chatWindow.innerHTML = `
 `;
 document.body.appendChild(chatWindow);
 
-const socket = new WebSocket('http://213.219.228.90:8000/');
+const socket = new WebSocket('ws://213.219.228.90:8321/ws/chat');
 
 const randomNumber = Math.round(Math.random());
 
@@ -229,12 +229,15 @@ closeButton.onclick = () => {
 };
 
 socket.onmessage = (event) => {
-    console.log(event.data);
-    const message = JSON.parse(event.data);
+    // console.log(event.data);
+    console.log(event);
+    // const message = JSON.parse(event.data);
+    const message = event.data;
     const chatMessages = chatWindow.querySelector('.chat-messages');
     const botMessage = document.createElement('div');
     botMessage.classList.add('bot-message');
-    botMessage.textContent = message.message;
+    // botMessage.textContent = message.message;
+    botMessage.textContent = message;
     chatMessages.appendChild(botMessage);
 };
 

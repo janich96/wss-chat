@@ -191,7 +191,7 @@ chatWindow.innerHTML = `
 `;
 document.body.appendChild(chatWindow);
 
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket('http://213.219.228.90:8000/');
 
 const randomNumber = Math.round(Math.random());
 

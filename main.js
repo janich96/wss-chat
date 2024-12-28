@@ -190,14 +190,20 @@ chatWindow.innerHTML = `
     </form>
 `;
 document.body.appendChild(chatWindow);
+// ws://213.219.228.90:8321/ws/chat ws://localhost:8080
+// const socket = new WebSocket('ws://213.219.228.90:8321/ws/chat');
 
-const socket = new WebSocket('ws://213.219.228.90:8321/ws/chat');
+let socket;
 
 const randomNumber = Math.round(Math.random());
 
 const openChat = () => {
     chatWindow.classList.add('show');
     chatToggle.style.display = 'none';
+
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        socket = new WebSocket('ws://213.219.228.90:8321/ws/chat');
+    }
     
     socket.onopen = () => {
         socket.send(JSON.stringify({ 
@@ -205,9 +211,30 @@ const openChat = () => {
             url: 'https://example.com', 
             behavior_score: randomNumber 
         }));
+        
+        console.log('WebSocket connection opened');
     };
 
-    console.log('WebSocket connection opened');
+    socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+
+    socket.onclose = (event) => {
+        console.log(`Connection closed. Code: ${event.code}, Reason: ${event.reason}`);
+    };
+
+    socket.onmessage = (event) => {
+        // console.log(event.data);
+        console.log(event);
+        // const message = JSON.parse(event.data);
+        const message = event.data;
+        const chatMessages = chatWindow.querySelector('.chat-messages');
+        const botMessage = document.createElement('div');
+        botMessage.classList.add('bot-message');
+        // botMessage.textContent = message.message;
+        botMessage.textContent = message;
+        chatMessages.appendChild(botMessage);
+    };
 }
 
 chatToggle.onclick = () => openChat();
@@ -223,26 +250,7 @@ closeButton.onclick = () => {
         type: 'submission_complete'
     }));
 
-    socket.onclose = () => {
-        console.log('WebSocket connection closed');
-    };
-};
-
-socket.onmessage = (event) => {
-    // console.log(event.data);
-    console.log(event);
-    // const message = JSON.parse(event.data);
-    const message = event.data;
-    const chatMessages = chatWindow.querySelector('.chat-messages');
-    const botMessage = document.createElement('div');
-    botMessage.classList.add('bot-message');
-    // botMessage.textContent = message.message;
-    botMessage.textContent = message;
-    chatMessages.appendChild(botMessage);
-};
-
-socket.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    socket.close();
 };
 
 const chatInput = chatWindow.querySelector('.chat-input input');

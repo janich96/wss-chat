@@ -234,6 +234,7 @@ const openChat = () => {
         // botMessage.textContent = message.message;
         botMessage.textContent = message;
         chatMessages.appendChild(botMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 }
 
@@ -270,6 +271,7 @@ chatInputForm.onsubmit = (event) => {
         }));
 
         chatMessages.appendChild(userMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
         chatInput.value = '';
     }
 };

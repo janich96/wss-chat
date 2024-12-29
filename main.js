@@ -171,6 +171,19 @@ const topElement = document.createElement('div');
 topElement.classList.add('top-element');
 document.body.appendChild(topElement);
 
+const printMessageByCharacter = (message, parentElement, chatMessages) => {
+    const charsArray = message.split('');
+    let result = '';
+    const printInterval = setInterval(() => {
+        result += charsArray.shift();
+        parentElement.textContent = result;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (result === message) {
+            clearInterval(printInterval);
+        }
+    }, 100);
+}
+
 const chatToggle = document.createElement('button');
 chatToggle.classList.add('chat-toggle');
 chatToggle.textContent = 'Chat';
@@ -232,9 +245,8 @@ const openChat = () => {
         const botMessage = document.createElement('div');
         botMessage.classList.add('bot-message');
         // botMessage.textContent = message.message;
-        botMessage.textContent = message;
         chatMessages.appendChild(botMessage);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        printMessageByCharacter(message, botMessage, chatMessages);
     };
 }
 
@@ -263,7 +275,6 @@ chatInputForm.onsubmit = (event) => {
         const userMessage = document.createElement('div');
         const chatMessages = chatWindow.querySelector('.chat-messages');
         userMessage.classList.add('user-message');
-        userMessage.textContent = message;
 
         socket.send(JSON.stringify({ 
             type: 'message',
@@ -271,7 +282,7 @@ chatInputForm.onsubmit = (event) => {
         }));
 
         chatMessages.appendChild(userMessage);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        printMessageByCharacter(message, userMessage, chatMessages);
         chatInput.value = '';
     }
 };
